@@ -14,19 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4
 
       - name: 'Configure AWS Credentials'
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::071604987387:role/GithubActionsRepoApp
           aws-region: us-east-2
 
       - name: Amazon ECR "Login" Action for GitHub Actions
-        uses: aws-actions/amazon-ecr-login@v2.0.1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, Tag, and Push image to Amazon ECR
         run: |
-          docker build -t meu-website:v1.0 .
+          docker build -f app/Dockerfile -t meu-website:v1.0 app
           docker tag meu-website:v1.0 071604987387.dkr.ecr.us-east-2.amazonaws.com/site_prod:v1.0
           docker push 071604987387.dkr.ecr.us-east-2.amazonaws.com/site_prod:v1.0
