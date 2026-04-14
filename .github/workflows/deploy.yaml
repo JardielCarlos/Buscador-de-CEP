@@ -32,6 +32,7 @@ jobs:
           docker push 071604987387.dkr.ecr.us-east-2.amazonaws.com/site_prod:v1.0
   job2:
     name: deploy_ec2
+    needs: job1
     env: 
       INSTANCE_KEY: ${{ secrets.INSTANCE_KEY }}
       PUBLIC_IP: ${{ secrets.PUBLIC_IP }}
@@ -40,6 +41,7 @@ jobs:
       - name: Deploy EC2 SSH
         run: |
           echo "$INSTANCE_KEY" > chave-site.pem
+          chmod 400 chave-site.pem
           ssh -i chave-site.pem -o StrictHostKeyChecking=no ec2-user@$PUBLIC_IP << EOF
             login ECR: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 071604987387.dkr.ecr.us-east-2.amazonaws.com
             docker pull 071604987387.dkr.ecr.us-east-2.amazonaws.com/site_prod:v1.0
